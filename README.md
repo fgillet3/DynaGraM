@@ -1,2 +1,2 @@
 # DynaGraM
- R code of the DynaGraM model
+ R code of the *DynaGraM* model

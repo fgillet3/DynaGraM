@@ -67,8 +67,12 @@ source("RunScenarios120.R")
 
 ### Load model outputs ----
 
+# Results of previous simulations are stored in a file whose size exceeds 100 MB!
+# If present in the working directory after running the previous command, then:
 load("Outputs120.RData")
 
+# Else, load the big output file from a web repository:
+load("https://www.dropbox.com/s/ph1tgw9yom7yf33/Outputs120.RData?dl=0")
 
 
 ### Fig. 3 - Biomass dynamics under 4 management scenarios ----

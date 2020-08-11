@@ -173,6 +173,11 @@ out$J1 <- diversity(out[, 5:11]) / log(n)
 outAb120 <- out
 
 
-## Save model outputs ----
+## Save model outputs (large file!) ----
 save(outEG120, outIG120, outEM120, outIM120, outAb120, file = "Outputs120.RData")
 
+# Save model outputs in separate files fo each scenario
+save(outEG120, file = "Outputs120EG.RData")
+save(outIG120, file = "Outputs120IG.RData")
+save(outEM120, file = "Outputs120EM.RData")
+save(outIM120, file = "Outputs120IM.RData")

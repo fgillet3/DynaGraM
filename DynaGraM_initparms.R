@@ -83,21 +83,21 @@ initialize.parameters <- function(
   PWP = soil$PWP, # Value from Calanca, 2016
   # Critical temperature for maximal mineralization rate of No to Nm (°C)
   Tm1 = 40,
-  # Empirical parameters describing effect of temperature on mineralization (°C)
+  # Empirical parameter describing effect of temperature on mineralization (°C)
   Tm2 = 31.79,
-  # Empirical parameters describing effect of temperature on mineralization [-]
+  # Empirical parameter describing effect of temperature on mineralization [-]
   gT = 3.36,
-  # Empirical parameters describing effect of soil water on mineralization [-]
+  # Empirical parameter describing effect of soil water on mineralization [-]
   gW1 = 1,
-  # Empirical parameters describing effect of soil water on mineralization [-]
+  # Empirical parameter describing effect of soil water on mineralization [-]
   gW2 = 6.63,
-  # Empirical parameters describing effect of soil water on mineralization [-]
+  # Empirical parameter describing effect of soil water on mineralization [-]
   gW3 = -5.69,
   # Maximal measured value of PET	 (mm d-1)
   PETmax = pmax(max(weather$ETc), 8),
-  # Empirical parameters for fitting fW function of Jouven et al. [-]
+  # Empirical parameter for fitting the water reducer function [-]
   beta1 = 6.467,
-  # Empirical parameters for fitting fW function of Jouven et al. [-]
+  # Empirical parameter for fitting the water reducer function [-]
   beta2 = 7.623e-8,
   # Empirical parameter for reduction factor at high daily radiation [m2 d MJ-1]
   gamma1 = 0.0445,
@@ -108,9 +108,9 @@ initialize.parameters <- function(
   
   # Maximal possible livestock density	(ABU ha-1)
   SDm = 2,
-  # Coefficient in the Hill function of the grzing function
+  # Coefficient in the Hill function of the grazing function
   ksi = 1,
-  # Herb biomass daily consumption of 1 adult bovine unit	 (kg DM ABU-1 d-1)
+  # Herb biomass daily consumption of 1 adult bovine unit (kg DM ABU-1 d-1)
   kappa = 22,
   # Rate of mineral nitrogen restitution by cattle urine deposition (kg N ABU-1 d-1)
   Nuri = 0.315,

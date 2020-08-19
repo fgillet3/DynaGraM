@@ -106,9 +106,9 @@ initialize.parameters <- function(
   
   # ========= MANAGEMENT PARAMETERS ===========
   
-  # Maximal possible livestock density	(ABU ha-1)
+  # Maximal possible livestock density (ABU ha-1)
   SDm = 2,
-  # Coefficient in the Hill function of the grazing function
+  # Parameter in the grazing function
   ksi = 1,
   # Herb biomass daily consumption of 1 adult bovine unit (kg DM ABU-1 d-1)
   kappa = 22,

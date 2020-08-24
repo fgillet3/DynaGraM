@@ -94,11 +94,14 @@ if (nyears != 100) {
 }
 
 
-### Fig. 3 - Biomass dynamics under 4 management scenarios ----
+### Fig. 3 - Biomass seasonal dynamics under 4 management scenarios ----
+
+# Choose the year
+yy <- 20
 
 # Extensive grazing 
 management <- G1M0F0
-gday <- management %>% filter(year == 20, SD > 0)
+gday <- management %>% filter(year == yy, SD > 0)
 out <- outEG
 source("1-plot_Biomass_G.R")
 g1 <- g0 + labs(title = "Extensive Grazing")
@@ -106,7 +109,7 @@ B20EG <- biomass1
 
 # Intensive grazing 
 management <- G2M0F1
-gday <- management %>% filter(year == 20, SD > 0)
+gday <- management %>% filter(year == yy, SD > 0)
 out <- outIG
 source("1-plot_Biomass_G.R")
 g2 <- g0 + labs(title = "Intensive Grazing")

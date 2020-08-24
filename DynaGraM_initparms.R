@@ -94,7 +94,7 @@ initialize.parameters <- function(
   # Empirical parameter describing effect of soil water on mineralization [-]
   gW3 = -5.69,
   # Maximal measured value of PET	 (mm d-1)
-  PETmax = pmax(max(weather$ETc), 8),
+  PETmax = pmax(max(weather$PET), 8),
   # Empirical parameter for fitting the water reducer function [-]
   beta1 = 6.467,
   # Empirical parameter for fitting the water reducer function [-]

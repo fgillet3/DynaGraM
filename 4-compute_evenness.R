@@ -8,22 +8,8 @@ initBi <- data.frame(Assemblage = paste0("S", 1:8),
                      L = c(rep(25, 6), 150, 300 / 7))
 
 # Create the matrix with all evenness values
-MatE1 <- matrix(NA, nrow = lengthsimu, ncol = 12)
-colnames(MatE1) <-
-  c(
-    "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "S6",
-    "S7",
-    "S8",
-    "min",
-    "max",
-    "mean",
-    "delta"
-  )
+MatE <- matrix(NA, nrow = lengthsimu, ncol = 8)
+colnames(MatE) <- c("S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8")
 
 # 1. Dominance of PFT A
 state <- c(
@@ -43,7 +29,7 @@ out <- as.data.frame(out1)
 N2 <- diversity(out[, 5:11], "inv")
 N2[is.infinite(N2)] <- 0
 E <- N2 / n
-MatE1[, 1] <- E
+MatE[, 1] <- E
 
 # 2. Dominance of PFT B
 state <- c(
@@ -63,7 +49,7 @@ out <- as.data.frame(out1)
 N2 <- diversity(out[, 5:11], "inv")
 N2[is.infinite(N2)] <- 0
 E <- N2 / n
-MatE1[, 2] <- E
+MatE[, 2] <- E
 
 # 3. Dominance of PFT C
 state <- c(
@@ -83,7 +69,7 @@ out <- as.data.frame(out1)
 N2 <- diversity(out[, 5:11], "inv")
 N2[is.infinite(N2)] <- 0
 E <- N2 / n
-MatE1[, 3] <- E
+MatE[, 3] <- E
 
 # 4. Dominance of PFT D
 state <- c(
@@ -103,7 +89,7 @@ out <- as.data.frame(out1)
 N2 <- diversity(out[, 5:11], "inv")
 N2[is.infinite(N2)] <- 0
 E <- N2 / n
-MatE1[, 4] <- E
+MatE[, 4] <- E
 
 # 5. Dominance of PFT E
 state <- c(
@@ -123,7 +109,7 @@ out <- as.data.frame(out1)
 N2 <- diversity(out[, 5:11], "inv")
 N2[is.infinite(N2)] <- 0
 E <- N2 / n
-MatE1[, 5] <- E
+MatE[, 5] <- E
 
 # 6. Dominance of PFT R
 state <- c(
@@ -143,7 +129,7 @@ out <- as.data.frame(out1)
 N2 <- diversity(out[, 5:11], "inv")
 N2[is.infinite(N2)] <- 0
 E <- N2 / n
-MatE1[, 6] <- E
+MatE[, 6] <- E
 
 # 7. Dominance of PFT L
 state <- c(
@@ -163,7 +149,7 @@ out <- as.data.frame(out1)
 N2 <- diversity(out[, 5:11], "inv")
 N2[is.infinite(N2)] <- 0
 E <- N2 / n
-MatE1[, 7] <- E
+MatE[, 7] <- E
 
 # 8. Codominance of all PFTs
 state <- c(
@@ -183,14 +169,16 @@ out <- as.data.frame(out1)
 N2 <- diversity(out[, 5:11], "inv")
 N2[is.infinite(N2)] <- 0
 E <- N2 / n
-MatE1[, 8] <- E
+MatE[, 8] <- E
 
+MatE <- as.data.frame(MatE)
 
-# Compute min, max, mean and delta of E index
-for (i in 1:nrow(out)) {
-  MatE1[i, 9] <- min(MatE1[i, 1:8])
-  MatE1[i, 10] <- max(MatE1[i, 1:8])
-  MatE1[i, 11] <- mean(MatE1[i, 1:8])
-  MatE1[i, 12] <- MatE1[i, 10] - MatE1[i, 9]
-}
-MatE1 <- as.data.frame(MatE1)
+# Compute min, max, mean, delta and sd of evenness
+MatE$min <- apply(MatE[, 1:8], 1, min)
+MatE$max <- apply(MatE[, 1:8], 1, max)
+MatE$mean <- apply(MatE[, 1:8], 1, mean)
+MatE$delta <- MatE$max - MatE$min
+MatE$sd <- apply(MatE[, 1:8], 1, sd)
+
+MatE <- as_tibble(MatE) %>% 
+  mutate(date = ficdates, year = rep(1:nyears, each = 365))

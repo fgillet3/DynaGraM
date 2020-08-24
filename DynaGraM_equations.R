@@ -14,10 +14,10 @@ DynaGraM <- function(t, state, parms) {
     PET <- weather[, 8][t]
     SumTemp <- weather[, 9][t]
     
-    SD <- management[, 4][t]
-    Nmf <- management[, 5][t]
-    Nof <- management[, 6][t]
-    mdays <- management[, 7][t]
+    SD <- management[, "SD"][t]
+    Nmf <- management[, "Nmf"][t]
+    Nof <- management[, "Nof"][t]
+    mdays <- management[, "mdays"][t]
   
     # Auxiliary variables
     Tmin <- exp(gT * (Temp - Tm1) / (Temp + Tm2))
@@ -105,7 +105,7 @@ DynaGraM <- function(t, state, parms) {
     # Balance of plant growth
     Reducer <- Nred * Tred * Wred * Gred
     gr <- grm * Reducer * SEA
-    netgr <- sum (gr - mu * SEAsen * B)
+    netgr <- sum(gr - mu * SEAsen * B)
     
     # Amount of N transfer to the soil from dead leaves
     NoSupply <- corg * sum(delta * mu * SEAsen * B)

@@ -2,7 +2,7 @@
 ### DynaGraM: a process-based model to simulate multi-species plant community 
 ### dynamics in managed grasslands. Ecological Modelling.
 ### Thibault Moulin, Antoine Perasso, Pierluigi Calanca, François Gillet
-### Last update by F. Gillet, 2020-08-11
+
 
 ### Required packages and general settings ----
 
@@ -17,11 +17,6 @@ library(vegan)
 lct <- Sys.getlocale("LC_TIME")
 Sys.setlocale("LC_TIME", "C")
 
-# Fictitious dates for 120-year simulations
-alldates <- seq(as.Date("0001-01-01"), as.Date("0120-12-31"), by = "days")
-juld <- yday(alldates)
-ficdates <- alldates[juld < 366]
-
 # Define colours for seven PFTs
 col7 <- c("#56B4E9", "orange", "forestgreen", "green", "red", "purple", "pink")
 
@@ -31,16 +26,31 @@ col7 <- c("#56B4E9", "orange", "forestgreen", "green", "red", "purple", "pink")
 # Load model equations and parameters
 source("DynaGraM_equations.R")
 source("DynaGraM_initparms.R")
-load("Parameters120.RData")
+load("Parameters.RData")
 
 # Species-specific parameters
 (n <- nrow(parasel))
 (sp <- rownames(parasel))
 
+# Load climatic forcing variables (weather Pontarlier 2004)
+load("Climate.RData")
+
+# Load management scenarios (to be repeated each year)
+load("Management.RData")
+
 # Duration of the simulation
-nyears <- 120    # here choose 120 years maximum!
+nyears <- 100   # Here choose the number of simulation years
 times <- seq(1, nyears * 365, 1)
 lengthsimu <- 365 * nyears
+
+# Fictitious dates for simulations
+ficdates <- seq(as.Date("2001-01-01"), 
+                as.Date(paste0(2000 + nyears, "-12-31")), 
+                by = "days")
+ficdates <- ficdates[yday(ficdates) < 366]
+
+# Time series of forcing variables
+source("0-forcing_variables.R")
 
 # Initialize parameters
 parms <- initialize.parameters()
@@ -54,13 +64,11 @@ state <- c(
   B = rep(parms$iniB / n, n)
 )
 
-# Load scenarios (120 years)
-load("Scenarios120.RData")
-
 
 ### Run scenarios and save simulation results (NOT RUN) ----
 
-source("RunScenarios120.R")
+# source("RunScenarios120.R")
+source("RunScenarios.R")
 
 ### END NOT RUN
 
@@ -68,41 +76,55 @@ source("RunScenarios120.R")
 ### Load model outputs ----
 
 # Results of previous simulations are stored in separate files for each scenario
-load("Outputs120EG.RData")
-load("Outputs120IG.RData")
-load("Outputs120EM.RData")
-load("Outputs120IM.RData")
+load("OutputsEG100.RData")
+load("OutputsIG100.RData")
+load("OutputsEM100.RData")
+load("OutputsIM100.RData")
+
+# Update forcing variables
+if (nyears != 100) {
+  nyears <- 100
+  times <- seq(1, nyears * 365, 1)
+  lengthsimu <- 365 * nyears
+  ficdates <- seq(as.Date("2001-01-01"), 
+                  as.Date(paste0(2000 + nyears, "-12-31")), 
+                  by = "days")
+  ficdates <- ficdates[yday(ficdates) < 366]
+  source("0-forcing_variables.R")
+}
 
 
+### Fig. 3 - Biomass seasonal dynamics under 4 management scenarios ----
 
-### Fig. 3 - Biomass dynamics under 4 management scenarios ----
+# Choose the year
+yy <- 20
 
 # Extensive grazing 
 management <- G1M0F0
-gday <- management %>% filter(year == 20, SD > 0)
-out <- outEG120
+gday <- management %>% filter(year == yy, SD > 0)
+out <- outEG
 source("1-plot_Biomass_G.R")
 g1 <- g0 + labs(title = "Extensive Grazing")
 B20EG <- biomass1
 
 # Intensive grazing 
 management <- G2M0F1
-gday <- management %>% filter(year == 20, SD > 0)
-out <- outIG120
+gday <- management %>% filter(year == yy, SD > 0)
+out <- outIG
 source("1-plot_Biomass_G.R")
 g2 <- g0 + labs(title = "Intensive Grazing")
 B20IG <- biomass1
 
 # Extensive mowing 
 management <- G0M1F1
-out <- outEM120
+out <- outEM
 source("1-plot_Biomass_M.R")
 g3 <- g0 + labs(title = "Extensive Mowing")
 B20EM <- biomass1
 
 # Intensive mowing 
 management <- G0M2F2
-out <- outIM120
+out <- outIM
 source("1-plot_Biomass_M.R")
 g4 <- g0 + labs(title = "Intensive Mowing")
 B20IM <- biomass1
@@ -129,9 +151,12 @@ save(Bi20EIGM, file = "Bi20EIGM.RData")
 
 source("2-plot_reducers.R") # function
 
+# Choose the year to be displayed (between 1 and nyears)
+yy <- 50
+
 ## Extensive grazing
 management <- G1M0F0
-out <- outEG120
+out <- outEG
 
 # Grazing period
 Gstart <- 141 # 21 May
@@ -146,20 +171,20 @@ grazD <- as_tibble(management) %>%
 
 # Reducers of plant growth (daily resolution)
 # Arithmetic mean
-g1EG <- ggRedB(yr = 20, each.sp = FALSE, weighted = FALSE)
+g1EG <- ggRedB(yr = yy, each.sp = FALSE, weighted = FALSE)
 g1EG <- g1EG + labs(title = "Extensive Grazing")
 # Weighted arithmetic mean
-g1EGw <- ggRedB(yr = 20, each.sp = FALSE, weighted = TRUE)
+g1EGw <- ggRedB(yr = yy, each.sp = FALSE, weighted = TRUE)
 g1EGw <- g1EGw + labs(title = "Extensive Grazing")
 source("2-plot_growthrate.R")
 g2EG <- g2 + labs(title = "Extensive Grazing")
 
 ## Intensive mowing
 management <- G0M2F2
-out <- outIM120
-g1IM <- ggRedB(yr = 20, each.sp = FALSE, weighted = FALSE)
+out <- outIM
+g1IM <- ggRedB(yr = yy, each.sp = FALSE, weighted = FALSE)
 g1IM <- g1IM + labs(title = "Intensive Mowing")
-g1IMw <- ggRedB(yr = 20, each.sp = FALSE, weighted = TRUE)
+g1IMw <- ggRedB(yr = yy, each.sp = FALSE, weighted = TRUE)
 g1IMw <- g1IMw + labs(title = "Intensive Mowing")
 source("2-plot_growthrate.R")
 g2IM <- g2 + labs(title = "Intensive Mowing")
@@ -173,11 +198,15 @@ ggarrange(g1EGw, g1IMw, ncol = 2, labels = "AUTO",
 ggsave("Fig4ab.pdf")
 ggsave("Fig4ab.png")
 
+ggarrange(g1EG, g1IM, ncol = 2, labels = "AUTO", 
+          common.legend = TRUE, legend = "bottom")
+ggsave("Fig4abu.pdf")
+ggsave("Fig4abu.png")
+
 ggarrange(g2EG, g2IM, ncol = 2, labels = c("C", "D"), 
           common.legend = TRUE, legend = "bottom")
 ggsave("Fig4cd.pdf")
 ggsave("Fig4cd.png")
-
 
 
 ### Fig. 6 - Comparison with floristic records ----
@@ -322,7 +351,6 @@ ggsave("Fig6.pdf")
 ggsave("Fig6.png")
 
 
-
 ### Fig. 7 - Sensitivity to initial conditions ----
 
 # Initial composition
@@ -338,6 +366,11 @@ ggsave("Fig7a.png")
 nyears <- 10  
 times <- seq(1, nyears * 365, 1)
 lengthsimu <- 365 * nyears
+ficdates <- seq(as.Date("2001-01-01"), 
+                as.Date(paste0(2000 + nyears, "-12-31")), 
+                by = "days")
+ficdates <- ficdates[yday(ficdates) < 366]
+source("0-forcing_variables.R")
 # Extensive grazing
 management <- G1M0F0
 scenario <- "Extensive Grazing"
@@ -366,6 +399,11 @@ save(Bi10, file = "Bi10.RData")
 nyears <- 50  
 times <- seq(1, nyears * 365, 1)
 lengthsimu <- 365 * nyears
+ficdates <- seq(as.Date("2001-01-01"), 
+                as.Date(paste0(2000 + nyears, "-12-31")), 
+                by = "days")
+ficdates <- ficdates[yday(ficdates) < 366]
+source("0-forcing_variables.R")
 # Extensive grazing
 management <- G1M0F0
 scenario <- "Extensive Grazing"
@@ -423,67 +461,62 @@ ggsave("Fig7c.pdf")
 ggsave("Fig7c.png")
 
 
-
 ### Fig. 8 - Sensitivity to initial conditions - line plot of Simpson evenness ----
 
-nyears <- 120  
+nyears <- 100  
 times <- seq(1, nyears * 365, 1)
 lengthsimu <- 365 * nyears
+ficdates <- seq(as.Date("2001-01-01"), 
+                as.Date(paste0(2000 + nyears, "-12-31")), 
+                by = "days")
+ficdates <- ficdates[yday(ficdates) < 366]
+source("0-forcing_variables.R")
 
 ## Compute simulations (NOT RUN)
 
 # Extensive grazing
 management <- G1M0F0
 source("4-compute_evenness.R") # long computation!
-MatE1 <- as_tibble(MatE1) %>% 
-  mutate(date = ficdates, year = rep(1:nyears, each = 365))
-save(MatE1, file = "MatE1.RData")
+TabEeg <- MatE
+save(TabEeg, file = "TabEeg.RData")
+
 # Intensive mowing
 management <- G0M2F2
 source("4-compute_evenness.R") # long computation!
-MatE1 <- as_tibble(MatE1) %>% 
-  mutate(date = ficdates, year = rep(1:nyears, each = 365))
-save(MatE1, file = "MatE2.RData")
+TabEim <- MatE
+save(TabEim, file = "TabEim.RData")
+
 # Intensive grazing
 management <- G2M0F1
 source("4-compute_evenness.R") # long computation!
-MatE1 <- as_tibble(MatE1) %>% 
-  mutate(date = ficdates, year = rep(1:nyears, each = 365))
-save(MatE1, file = "MatE3.RData")
+TabEig <- MatE
+save(TabEig, file = "TabEig.RData")
+
 # Extensive mowing
 management <- G0M1F1
 source("4-compute_evenness.R") # long computation!
-MatE1 <- as_tibble(MatE1) %>% 
-  mutate(date = ficdates, year = rep(1:nyears, each = 365))
-save(MatE1, file = "MatE4.RData")
+TabEem <- MatE
+save(TabEem, file = "TabEem.RData")
 
 ## END NOT RUN
 
 ## Compare mean and variation of evenness
-load("MatE1.RData") # EG
-MatE1$sd <- apply(MatE1[, 1:8], 1, sd)
-Eeg <- MatE1 %>% 
+load("TabEeg.RData") # EG
+Eeg <- TabEeg %>% 
   select(date, year, mean, sd, delta) %>% 
   mutate(Scenario = "Extensive Grazing")
-
-load("MatE3.RData") # IG
-MatE1$sd <- apply(MatE1[, 1:8], 1, sd)
-Eig <- MatE1 %>% 
+load("TabEig.RData") # IG
+Eig <- TabEig %>% 
   select(date, year, mean, sd, delta) %>% 
   mutate(Scenario = "Intensive Grazing")
-
-load("MatE4.RData") # EM
-MatE1$sd <- apply(MatE1[, 1:8], 1, sd)
-Eem <- MatE1 %>% 
+load("TabEem.RData") # EM
+Eem <- TabEem %>% 
   select(date, year, mean, sd, delta) %>% 
   mutate(Scenario = "Extensive Mowing")
-
-load("MatE2.RData") # IM
-MatE1$sd <- apply(MatE1[, 1:8], 1, sd)
-Eim <- MatE1 %>% 
+load("TabEim.RData") # IM
+Eim <- TabEim %>% 
   select(date, year, mean, sd, delta) %>% 
   mutate(Scenario = "Intensive Mowing")
-
 Ev <- bind_rows(Eeg, Eig, Eem, Eim) %>% 
   mutate(CV = sd / mean)
 Ev$Scenario <- factor(Ev$Scenario,
@@ -493,7 +526,6 @@ Ev$Scenario <- factor(Ev$Scenario,
       "Extensive Mowing",
       "Intensive Mowing"),
     ordered = TRUE)
-
 save(Ev, file = "Ev.RData")
 
 ## Plot the results
@@ -530,7 +562,7 @@ ggplot(Evm100y, aes(year, Evenness, colour = Scenario, fill = Scenario)) +
   ), alpha = 0.3, linetype = 0) +
   scale_colour_manual(values = c("green2", "green4", "orange", "red")) +
   scale_fill_manual(values = c("green2", "green4", "orange", "red")) +
-  scale_x_continuous(breaks = seq(0, 120, by = 10)) +
+  scale_x_continuous(breaks = seq(0, 100, by = 10)) +
   scale_y_continuous(breaks = seq(0, 1, by = 0.1)) +
   labs(x = expression("Time [yr]"),
        y = expression("Simpson evenness [-]")) +
@@ -544,25 +576,25 @@ ggsave("Fig8.png")
 
 ## Extensive grazing
 management <- G1M0F0
-out <- outEG120
+out <- outEG
 source("5-compute_changes.R")
 chalEG <- chal %>% mutate(Scenario = "Extensive Grazing")
 
 ## Intensive mowing
 management <- G0M2F2
-out <- outIM120
+out <- outIM
 source("5-compute_changes.R")
 chalIM <- chal %>% mutate(Scenario = "Intensive Mowing")
 
 ## Intensive grazing
 management <- G2M0F1
-out <- outIG120
+out <- outIG
 source("5-compute_changes.R")
 chalIG <- chal %>% mutate(Scenario = "Intensive Grazing")
 
 ## Extensive mowing
 management <- G0M1F1
-out <- outEM120
+out <- outEM
 source("5-compute_changes.R")
 chalEM <- chal %>% mutate(Scenario = "Extensive Mowing")
 
@@ -624,8 +656,8 @@ ggplot(data = chale, aes(x = Year, y = Rate, colour = Scenario)) +
                      breaks = seq(0, 5, by = 0.5),
                      minor_breaks = seq(0, 5, by = 0.1)) +
   theme_cowplot() + theme(legend.position = "bottom")
-ggsave("FigS4.pdf")
-ggsave("FigS4.png")
+ggsave("FigC3.pdf")
+ggsave("FigC3.png")
 
 
 # Restrict outputs to the vegetation period
@@ -633,31 +665,30 @@ ggsave("FigS4.png")
 
 ## Extensive grazing
 management <- G1M0F0
-out <- outEG120 %>% filter(DOY %in% c(91:273))
+out <- outEG %>% filter(DOY %in% c(91:273))
 source("5-compute_changes.R")
 chalEG <- chal %>% mutate(Scenario = "Extensive Grazing")
 
 ## Intensive mowing
 management <- G0M2F2
-out <- outIM120 %>% filter(DOY %in% c(91:273))
+out <- outIM %>% filter(DOY %in% c(91:273))
 source("5-compute_changes.R")
 chalIM <- chal %>% mutate(Scenario = "Intensive Mowing")
 
 ## Intensive grazing
 management <- G2M0F1
-out <- outIG120 %>% filter(DOY %in% c(91:273))
+out <- outIG %>% filter(DOY %in% c(91:273))
 source("5-compute_changes.R")
 chalIG <- chal %>% mutate(Scenario = "Intensive Grazing")
 
 ## Extensive mowing
 management <- G0M1F1
-out <- outEM120 %>% filter(DOY %in% c(91:273))
+out <- outEM %>% filter(DOY %in% c(91:273))
 source("5-compute_changes.R")
 chalEM <- chal %>% mutate(Scenario = "Extensive Mowing")
 
 # Merge scenarios
 chal <- bind_rows(chalEG, chalEM, chalIG, chalIM)
-
 
 ## Plot the results
 dev.new(width = 9, height = 6, noRStudioGD = TRUE)
@@ -671,8 +702,8 @@ ggplot(data = chalnw, aes(x = Year, y = Rate, colour = Variable)) +
   scale_y_continuous(name = "Rate of change [%]") +
   facet_wrap(~Scenario) +
   theme_cowplot()
-ggsave("FigS2.pdf")
-ggsave("FigS2.png")
+ggsave("FigC2.pdf")
+ggsave("FigC2.png")
 
 # Plot vegetation state variables
 chalb <- chal %>% 
@@ -690,8 +721,8 @@ ggplot(data = chalb, aes(x = Year, y = Rate, colour = PFT)) +
   scale_y_continuous(name = "Rate of change relative to total biomass [%]") +
   facet_wrap(~Scenario) +
   theme_cowplot()
-ggsave("FigS3.pdf")
-ggsave("FigS3.png")
+ggsave("FigC1.pdf")
+ggsave("FigC1.png")
 
 
 # Fig. 5 - Rate of change for Simpson evenness (for the vegetation period) ----
@@ -731,16 +762,15 @@ ggsave("Fig5.png")
 load("ModVegeOuput.RData")
 # Read DynaGraM output
 management <- G0M2F2
-out <- outIM120
+out <- outIM
 # Choose the year
 yr <- 20
 # Plot the results
 source("6-ModVege_vs_DynaGraM.R")
 dev.new(width = 11, height = 7.5, noRStudioGD = TRUE)
 ggarrange(g1, g2, g3, g4, nrow = 2, ncol = 2, labels = "AUTO")
-ggsave("FigS5.pdf")
-ggsave("FigS5.png")
-
+ggsave("FigD1.pdf")
+ggsave("FigD1.png")
 
 
 ### Fig. 2 - CSR triangle ----
@@ -766,7 +796,6 @@ ggtern(data = CSR7, aes(R, C, S, fill = PFT)) +
        zarrow = "Stress")
 ggsave("Fig2.pdf")
 ggsave("Fig2.png")
-
 
 
 # Restore locale parameters

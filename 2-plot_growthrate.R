@@ -2,10 +2,10 @@
 names(out)
 netgr <- as_tibble(out) %>% select(date, 78:84, year) %>% 
   gather(key = "PFT", value = "ActualGrowth", -date, -year)
-netgr$PFT <- factor(netgr$PFT, labels = c("A", "B", "C", "D", "E", "R", "L"))
+netgr$PFT <- factor(netgr$PFT, labels = sp)
 
-netgr1 <- netgr %>% filter(year == 20)
-management1 <- management %>% filter(year == 20)
+netgr1 <- netgr %>% filter(year == yy)
+management1 <- management %>% filter(year == yy)
 
 ## Area plot
 g2 <- ggplot(netgr1, aes(date, ActualGrowth, fill = PFT)) +
@@ -24,7 +24,7 @@ g2 <- ggplot(netgr1, aes(date, ActualGrowth, fill = PFT)) +
 
 if (sum(management1$SD) > 0) {
   g2 <- g2 + geom_rect(
-    data = filter(grazD, year == 20),
+    data = filter(grazD, year == yy),
     inherit.aes = FALSE,
     aes(
       xmin = start,

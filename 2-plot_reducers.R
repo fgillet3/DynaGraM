@@ -30,7 +30,7 @@ ggRedB <- function(yr, each.sp = TRUE, weighted = TRUE) {
   redu$Reducer <- factor(
     redu$Reducer, 
     levels = c("Gred", "Tred", "Wred", "Nred", "Ared"),
-    labels = c("Trampling", "Temperature", "Water", "Nutrients", "All"))
+    labels = c("Trampling", "Temperature", "Water", "Nutrient", "All"))
   
   management1 <- management %>% filter(year == yr)
   
@@ -39,7 +39,7 @@ ggRedB <- function(yr, each.sp = TRUE, weighted = TRUE) {
       "Trampling" = "solid",
       "Temperature" = "solid",
       "Water" = "solid",
-      "Nutrients" = "solid",
+      "Nutrient" = "solid",
       "All" = "solid"
     )
   csizes <-
@@ -47,7 +47,7 @@ ggRedB <- function(yr, each.sp = TRUE, weighted = TRUE) {
       "Trampling" = 1,
       "Temperature" = 1,
       "Water" = 1,
-      "Nutrients" = 1,
+      "Nutrient" = 1,
       "All" = 0.5
     )
   calpha <-
@@ -55,7 +55,7 @@ ggRedB <- function(yr, each.sp = TRUE, weighted = TRUE) {
       "Trampling" = 1,
       "Temperature" = 1,
       "Water" = 1,
-      "Nutrients" = 1,
+      "Nutrient" = 1,
       "All" = 0.75
     )
   

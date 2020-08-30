@@ -152,7 +152,7 @@ save(Bi20EIGM, file = "Bi20EIGM.RData")
 source("2-plot_reducers.R") # function
 
 # Choose the year to be displayed (between 1 and nyears)
-yy <- 50
+yy <- 20
 
 ## Extensive grazing
 management <- G1M0F0

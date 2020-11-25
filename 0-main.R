@@ -4,6 +4,46 @@
 ### Thibault Moulin, Antoine Perasso, Pierluigi Calanca, François Gillet
 
 
+### Download the data from GitHub (RData files) ----
+
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Parameters.RData", 
+              "Parameters.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Climate.RData", 
+              "Climate.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Management.RData", 
+              "Management.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/OutputsEG100.RData", 
+              "OutputsEG100.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/OutputsIG100.RData", 
+              "OutputsIG100.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/OutputsEM100.RData", 
+              "OutputsEM100.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/OutputsIM100.RData", 
+              "OutputsIM100.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Obs68.RData", 
+              "Obs68.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Bi20EIGM.RData", 
+              "Bi20EIGM.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Bi10.RData", 
+              "Bi10.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Bi50.RData", 
+              "Bi50.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/TabEeg.RData", 
+              "TabEeg.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/TabEig.RData", 
+              "TabEig.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/TabEem.RData", 
+              "TabEem.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/TabEim.RData", 
+              "TabEim.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Ev.RData", 
+              "Ev.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/ModVegeOuput.RData", 
+              "ModVegeOuput.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/CSR7species.RData", 
+              "CSR7species.RData")
+
+
 ### Required packages and general settings ----
 
 library(deSolve)
@@ -94,14 +134,11 @@ if (nyears != 100) {
 }
 
 
-### Fig. 3 - Biomass seasonal dynamics under 4 management scenarios ----
-
-# Choose the year
-yy <- 20
+### Fig. 3 - Biomass dynamics under 4 management scenarios ----
 
 # Extensive grazing 
 management <- G1M0F0
-gday <- management %>% filter(year == yy, SD > 0)
+gday <- management %>% filter(year == 20, SD > 0)
 out <- outEG
 source("1-plot_Biomass_G.R")
 g1 <- g0 + labs(title = "Extensive Grazing")
@@ -109,7 +146,7 @@ B20EG <- biomass1
 
 # Intensive grazing 
 management <- G2M0F1
-gday <- management %>% filter(year == yy, SD > 0)
+gday <- management %>% filter(year == 20, SD > 0)
 out <- outIG
 source("1-plot_Biomass_G.R")
 g2 <- g0 + labs(title = "Intensive Grazing")
@@ -152,7 +189,7 @@ save(Bi20EIGM, file = "Bi20EIGM.RData")
 source("2-plot_reducers.R") # function
 
 # Choose the year to be displayed (between 1 and nyears)
-yy <- 20
+yy <- 50
 
 ## Extensive grazing
 management <- G1M0F0

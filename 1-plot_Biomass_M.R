@@ -4,7 +4,7 @@ biomass <- as_tibble(out) %>% select(date, year, 5:(n + 4)) %>%
   gather(key = "PFT", value = "Biomass", -date, -year)
 biomass$PFT <- factor(biomass$PFT, labels = sp)
 biomass$Biomass <- biomass$Biomass / 1000
-biomass1 <- biomass %>% filter(year == 20)
+biomass1 <- biomass %>% filter(year == yy)
 
 g0 <-
   ggplot(biomass1, aes(date, Biomass, fill = PFT)) +

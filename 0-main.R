@@ -4,6 +4,46 @@
 ### Thibault Moulin, Antoine Perasso, Pierluigi Calanca, François Gillet
 
 
+### Download the data from GitHub (RData files) ----
+
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Parameters.RData", 
+              "Parameters.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Climate.RData", 
+              "Climate.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Management.RData", 
+              "Management.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/OutputsEG100.RData", 
+              "OutputsEG100.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/OutputsIG100.RData", 
+              "OutputsIG100.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/OutputsEM100.RData", 
+              "OutputsEM100.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/OutputsIM100.RData", 
+              "OutputsIM100.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Obs68.RData", 
+              "Obs68.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Bi20EIGM.RData", 
+              "Bi20EIGM.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Bi10.RData", 
+              "Bi10.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Bi50.RData", 
+              "Bi50.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/TabEeg.RData", 
+              "TabEeg.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/TabEig.RData", 
+              "TabEig.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/TabEem.RData", 
+              "TabEem.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/TabEim.RData", 
+              "TabEim.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/Ev.RData", 
+              "Ev.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/ModVegeOuput.RData", 
+              "ModVegeOuput.RData")
+download.file("https://github.com/fgillet3/DynaGraM/raw/master/CSR7species.RData", 
+              "CSR7species.RData")
+
+
 ### Required packages and general settings ----
 
 library(deSolve)
